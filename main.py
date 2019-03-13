@@ -30,7 +30,7 @@ def check_lvl(x):
     if x > 100:
 
         if level_up > char.level:
-            char.level += 1
+            char.level = char.level + (level_up - char.level)
             char.exp = 0
             char.exp += exp_leftover
 
@@ -96,3 +96,11 @@ else:
         ########## MOVEMENT ##########
         ##############################
 
+check_lvl(20)   #20
+check_lvl(110)  #130
+check_lvl(280)  #410
+check_lvl(576)  #986
+print(char.level)
+print(char.exp)
+func = 20 + 110 + 280 + 576
+print(func)
