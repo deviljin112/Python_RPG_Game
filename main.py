@@ -5,9 +5,9 @@ import sys
 from classes import Human, Orc, Elf, Wolf, Zombie, Wraith
 from area import rooms
 
-        ##################################
-        ########## CLASS CHOICE ##########
-        ##################################
+        ###############################
+        ########## FUNCTIONS ##########
+        ###############################
 
 race = "None"
 
@@ -18,6 +18,46 @@ def set_global_race(c_race):
 def set_global_call(character):
     global char
     char = character
+
+def check_lvl(x):
+    global level_up, exp_leftover
+    
+    gained_exp = x
+
+    x += char.exp
+    level_up, exp_leftover = divmod(x, 100)
+
+    if x > 100:
+
+        if level_up > char.level:
+            char.level += 1
+            char.exp = 0
+            char.exp += exp_leftover
+
+            lvl_up_text = '''
+                You've Level'ed up!
+                Current Level: {}
+                Current Experiance: {}
+            '''.format(char.level, char.exp)
+
+            print(lvl_up_text)
+
+            x = 0
+
+    else:
+        char.exp = x
+        
+        exp_left_text = '''
+            You've gained {} experiance.
+            Current Experiance: {}.
+        '''.format(gained_exp, char.exp)
+        print(exp_left_text)
+
+
+        ##################################
+        ########## CLASS CHOICE ##########
+        ##################################
+
 
 print("Human, Elf, Orc")
 c_pick = input("Choose your class: ")
@@ -50,35 +90,6 @@ else:
     print(text)
     time.sleep(10)
     sys.exit()
-
-        ##############################
-        ########## LEVELING ##########
-        ##############################
-
-
-## Create level dict
-lvl_name = "Level"
-dict_lvl = 1
-lvl_dict = {}
-lvl_max = 100
-
-while dict_lvl <= lvl_max:
-    lvl_dict[lvl_name + "_{}".format(dict_lvl)] = dict_lvl
-    dict_lvl += 1
-
-
-## Moves one up the dict
-lvl_inter = lvl_dict.keys()
-lvl_inter = iter(lvl_inter)
-next_lvl_func = next(lvl_inter)
-
-
-## Checks EXP and triggers movement of dict
-char.exp = 10
-
-level_up, exp_leftover = divmod(char.exp, 100)
-
-print(level_up, exp_leftover)
 
 
         ##############################

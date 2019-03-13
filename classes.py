@@ -12,6 +12,7 @@ class Player:
         self._health = 100
         self._exp = 0
         self._level = 0
+        self._position = "spawn"
 
     def say(self, msg):
         print("{name}: {message}".format(name=self.name, message=msg))
@@ -55,6 +56,14 @@ class Player:
     @level.setter
     def level(self, level):
         self._level = level
+    
+    @property
+    def position(self):
+        return self._position
+
+    @position.setter
+    def position(self, position):
+        self._position = position
 
 class Human(Player):
     species = "Human"
