@@ -23,14 +23,14 @@ def check_lvl(x):
     global level_up, exp_leftover
     
     gained_exp = x
-
     x += char.exp
     level_up, exp_leftover = divmod(x, 100)
+    level_up += char.level
 
-    if x > 100:
+    if x >= 100:
 
         if level_up > char.level:
-            char.level = char.level + (level_up - char.level)
+            char.level = level_up
             char.exp = 0
             char.exp += exp_leftover
 
@@ -39,7 +39,6 @@ def check_lvl(x):
                 Current Level: {}
                 Current Experiance: {}
             '''.format(char.level, char.exp)
-
             print(lvl_up_text)
 
             x = 0
@@ -96,11 +95,72 @@ else:
         ########## MOVEMENT ##########
         ##############################
 
-check_lvl(20)   #20
-check_lvl(110)  #130
-check_lvl(280)  #410
-check_lvl(576)  #986
-print(char.level)
-print(char.exp)
-func = 20 + 110 + 280 + 576
-print(func)
+pos = char.position
+cat = char.category
+
+def current_pos(cat, pos):
+    if cat in rooms:
+        print("found")
+
+        if pos in rooms[cat]:
+            current_position = rooms[cat][pos]["name"]
+            print(current_position)
+
+            y = rooms[cat][pos]
+            return y
+    else:
+        print("not found")
+
+def connect_pos(z):
+    w = z["connects"].values()
+    return w
+    
+def pos_setter(p_set):
+    if p_set == "spawn":
+        char.category = "spawn"
+    elif p_set == "alley":
+        char.category = "alley"
+    elif p_set == "house":
+        char.category = "house"
+    else:
+        print("Missing Category")
+
+def output_convert(from_to):
+    print("converter")
+    if from_to == "alleyway_1" or "alleyway_2":
+        from_to = "alley"
+        return from_to
+    elif from_to == "hall" or "closet" or "bedroom":
+        from_to = "house"
+        return from_to
+    elif from_to == "living_room_1" or "living_room_2" or "living_room_3" or "living_room_4":
+        from_to = "living_room"
+        return from_to
+    elif from_to == "balcony_1" or "balcony_2":
+        from_to = "terrace"
+        return from_to
+
+current = current_pos(cat, pos)
+connectors = connect_pos(current)
+
+def level_movement():
+    print(connectors)
+    player_move = input("Next move: ")
+
+    for p_move in connectors:
+        if p_move == player_move:
+            char.position = p_move
+            p_converted = output_convert(p_move)
+            pos_setter(p_converted)
+            print("player moved")
+            break
+
+    print(char.category)
+    print(char.position)
+
+    print("Next Turn")
+
+print("turn 1")
+level_movement()
+print("turn 2")
+level_movement()

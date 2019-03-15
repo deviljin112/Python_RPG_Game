@@ -1,114 +1,116 @@
 rooms = {
 
-    "spawn" : {
-        "name"      : "Spawn",
-        "connects"  : {
-            1   : "house"
+    "spawner" : {
+
+        "spawn" : {
+            "name"      : "Spawn",
+            "connects"  : {
+                1   : "alleyway_1"
+            }
         }
     },
 
     "alley" : {
         
-        1   : {
+        "alleyway_1"   : {
             "name"      : "Alleyway_1",
             "connects"  : {
                 1   : "spawn",
-                2   : "Alleyway_2",
-                3   : "Hall"
+                2   : "alleyway_2",
+                3   : "hall"
             }
         },
         
-        2   : {
+        "alleyway_2"   : {
             "name"      : "Alleyway_2",
             "connects"  : {
-                1   : "Alleyway_1"
+                1   : "alleyway_1"
             }
         }
     },
 
     "house"   : {
 
-        1   : {
+        "hall"   : {
             "name"      : "Hall",
             "connects"  : {
-                1   : "Alleyway_1",
-                2   : "Closet",
-                3   : "Bedroom",
-                4   : "Living_Room_1"
+                1   : "alleyway_1",
+                2   : "closet",
+                3   : "bedroom",
+                4   : "living_room_1"
             }
         },
 
-        2   : {
+        "closet"   : {
             "name"      : "Closet",
             "enemy"     : "Zombie",
             "connects"  : {
-                1   : "Hall"
+                1   : "hall"
             }
         },
 
-        3   : {
+        "bedroom"   : {
             "name"      : "Bedroom",
             "bed"       : "Bed",
             "connects"  : {
-                1   : "Hall",
-                2   : "Balcony_1"
+                1   : "hall",
+                2   : "balcony_1"
             }
         },
 
         "living_room"   : {
 
-            1   : {
+            "living_room_1"   : {
                 "name"      : "Living_Room_1",
                 "connects"  : {
-                    1   : "Hall",
-                    2   : "Living_Room_2",
-                    3   : "Living_Room_4"
+                    1   : "hall",
+                    2   : "living_Room_2",
+                    3   : "living_Room_4"
                 }
             },
 
-            2   : {
+            "living_room_2"   : {
                 "name"      : "Living_Room_2",
                 "npc"       : "Villager",
                 "connects"  :   {
-                    1   : "Living_Room_1",
-                    2   : "Living_Room_3"
+                    1   : "living_Room_1",
+                    2   : "living_Room_3"
                 }
             },
 
-            3   : {
+            "living_room_3"   : {
                 "name"      : "Living_Room_3",
                 "chest"     : "Chest",
                 "connects"  : {
-                    1   : "Living_Room_2",
-                    2   : "Living_Room_4"
+                    1   : "living_Room_2",
+                    2   : "living_Room_4"
                 }
             },
 
-            4   : {
+            "living_room_4"   : {
                 "name"      : "Living_Room_4",
                 "connects"  : {
-                    1   : "Living_Room_1",
-                    2   : "Living_Room_3"
+                    1   : "living_Room_1",
+                    2   : "living_Room_3"
                 }
             }
         },
 
         "terrace"       :{
-            1   : {
+            "balcony_1"   : {
                 "name"      : "Balcony_1",
                 "connects"  : {
-                    1   : "Bedroom",
-                    2   : "Balcony_2"
+                    1   : "bedroom",
+                    2   : "balcony_2"
                 }
             },
 
-            2   : {
+            "balcony_2"   : {
                 "name"      : "Balcony_2",
                 "connects"  : {
-                    1   : "Balcony_1"
+                    1   : "balcony_1"
                 }
             }
         }
     }
-
 }
