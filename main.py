@@ -96,9 +96,6 @@ else:
         ########## MOVEMENT ##########
         ##############################
 
-pos = char.position
-cat = char.category
-
 def current_pos(cat, pos):
     if cat in rooms:
         print("found")
@@ -117,6 +114,7 @@ def connect_pos(z):
     return w
     
 def pos_setter(p_set):
+    print("setting category")
     if p_set == "spawn":
         char.category = "spawn"
     elif p_set == "alley":
@@ -127,7 +125,7 @@ def pos_setter(p_set):
         print("Missing Category")
 
 def output_convert(from_to):
-    print("converter")
+    print("converting")
     if from_to == "alleyway_1" or "alleyway_2":
         from_to = "alley"
         return from_to
@@ -140,19 +138,37 @@ def output_convert(from_to):
     elif from_to == "balcony_1" or "balcony_2":
         from_to = "terrace"
         return from_to
+    elif from_to == "spawn":
+        from_to = "spawner"
+        return from_to
+    else:
+        print("missing input")
 
-current = current_pos(cat, pos)
-connectors = connect_pos(current)
+def char_position():
+    char_pos = current_pos(cat, pos)
+    return char_pos
+
+def char_connect():
+    char_position_a = char_position()
+    connect_pos_a = connect_pos(char_position_a)
+    return connect_pos_a
 
 def level_movement():
-    print(connectors)
+    global cat, pos
+    cat = char.category
+    pos = char.position
+
+    print(list(char_connect()))
     player_move = input("Next move: ")
 
-    for p_move in connectors:
+    for p_move in char_connect():
         if p_move == player_move:
             char.position = p_move
+            print("step 1")
             p_converted = output_convert(p_move)
+            print("step 2")
             pos_setter(p_converted)
+            print("step 3")
             print("player moved")
             break
 
@@ -161,7 +177,9 @@ def level_movement():
 
     print("Next Turn")
 
-print("turn 1")
-level_movement()
-print("turn 2")
-level_movement()
+while char.health > 0:
+    level_movement()
+    print(char.category)
+    print(char.position)   
+
+print("Game Over")
