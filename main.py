@@ -22,15 +22,23 @@ def set_global_call(character):
 def check_lvl(x):
     global level_up, exp_leftover
     
+    print("---")
+
     gained_exp = x
 
-    x += char.exp
-    level_up, exp_leftover = divmod(x, 100)
+    x = x + char.exp
 
-    if x > 100:
+    level_up, exp_leftover = divmod(x, 100)
+    
+    print(level_up, exp_leftover, "level_up + exp_leftover")
+
+    if x >= 100:
 
         if level_up > char.level:
-            char.level = char.level + (level_up - char.level)
+            print(level_up, "level_up")
+            print(char.level, "char.level")
+            char.level = level_up
+            print(char.level, "char.level")
             char.exp = 0
             char.exp += exp_leftover
 
@@ -41,8 +49,7 @@ def check_lvl(x):
             '''.format(char.level, char.exp)
 
             print(lvl_up_text)
-
-            x = 0
+            print(x, "x")
 
     else:
         char.exp = x
@@ -97,9 +104,15 @@ else:
         ##############################
 
 check_lvl(20)   #20
+print("added 20")
 check_lvl(110)  #130
-check_lvl(280)  #410
-check_lvl(576)  #986
+print("added 110")
+check_lvl(2)    #132
+print("added 2")
+check_lvl(280)  #412
+print("added 280")
+check_lvl(576)  #988
+print("added 576")
 print(char.level)
 print(char.exp)
 func = 20 + 110 + 280 + 576
