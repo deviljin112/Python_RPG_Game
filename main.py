@@ -97,6 +97,7 @@ else:
         ##############################
 
 def current_pos(cat, pos):
+    print("current_pos", cat, pos)
     if cat in rooms:
         print("found")
 
@@ -115,31 +116,46 @@ def connect_pos(z):
     
 def pos_setter(p_set):
     print("setting category")
-    if p_set == "spawn":
-        char.category = "spawn"
+    if p_set == "spawner":
+        char.category = "spawner"
+        print("cat set to, ", char.category)
     elif p_set == "alley":
         char.category = "alley"
+        print("cat set to, ", char.category)
     elif p_set == "house":
         char.category = "house"
+        print("cat set to, ", char.category)
+    elif p_set == "living_room":
+        char.category = "living_room"
+        print("cat set to, ", char.category)
+    elif p_set == "terrace":
+        char.category = "terrace"
+        print("cat set to, ", char.category)
     else:
         print("Missing Category")
 
 def output_convert(from_to):
     print("converting")
-    if from_to == "alleyway_1" or "alleyway_2":
+    print(from_to)
+    if from_to in ("alleyway_1", "alleyway_2"):
         from_to = "alley"
+        print("set to ", from_to)
         return from_to
-    elif from_to == "hall" or "closet" or "bedroom":
+    elif from_to in ("hall", "closet", "bedroom"):
         from_to = "house"
+        print("set to ", from_to)
         return from_to
-    elif from_to == "living_room_1" or "living_room_2" or "living_room_3" or "living_room_4":
+    elif from_to in ("living_room_1", "living_room_2", "living_room_3", "living_room_4"):
         from_to = "living_room"
+        print("set to ", from_to)
         return from_to
-    elif from_to == "balcony_1" or "balcony_2":
+    elif from_to in ("balcony_1", "balcony_2"):
         from_to = "terrace"
+        print("set to ", from_to)
         return from_to
-    elif from_to == "spawn":
+    elif from_to in "spawn":
         from_to = "spawner"
+        print("set to ", from_to)
         return from_to
     else:
         print("missing input")
@@ -160,22 +176,27 @@ def level_movement():
 
     print(list(char_connect()))
     player_move = input("Next move: ")
+    p_move = player_move
+    
+    if p_move == "kill":
+        char.health = 0
+    else:
+        for p_move in char_connect():
+            if p_move == player_move:
+                char.position = p_move
+                print(char.position)
+                print("step 1")
+                p_converted = output_convert(char.position)
+                print("step 2")
+                pos_setter(p_converted)
+                print("step 3")
+                print("player moved")
+                break
 
-    for p_move in char_connect():
-        if p_move == player_move:
-            char.position = p_move
-            print("step 1")
-            p_converted = output_convert(p_move)
-            print("step 2")
-            pos_setter(p_converted)
-            print("step 3")
-            print("player moved")
-            break
+        print(char.category)
+        print(char.position)
 
-    print(char.category)
-    print(char.position)
-
-    print("Next Turn")
+        print("Next Turn")
 
 while char.health > 0:
     level_movement()
