@@ -5,6 +5,7 @@ rooms = {
         "spawn" : {
             "name"      : "Spawn",
             "interact"  : "",
+            "solved"    : False,
             "connects"  : {
                 1   : "alleyway_1"
             }
@@ -16,6 +17,7 @@ rooms = {
         "alleyway_1"   : {
             "name"      : "Alleyway 1",
             "interact"  : "",
+            "solved"    : False,
             "connects"  : {
                 1   : "spawn",
                 2   : "alleyway_2",
@@ -26,6 +28,7 @@ rooms = {
         "alleyway_2"   : {
             "name"      : "Alleyway 2",
             "interact"  : "",
+            "solved"    : False,
             "connects"  : {
                 1   : "alleyway_1"
             }
@@ -37,6 +40,7 @@ rooms = {
         "hall"   : {
             "name"      : "Hall",
             "interact"  : "",
+            "solved"    : False,
             "connects"  : {
                 1   : "alleyway_1",
                 2   : "closet",
@@ -47,7 +51,8 @@ rooms = {
 
         "closet"   : {
             "name"      : "Closet",
-            "interact"  : "Zombie",
+            "interact"  : "zombie",
+            "solved"    : False,
             "connects"  : {
                 1   : "hall"
             }
@@ -55,7 +60,8 @@ rooms = {
 
         "bedroom"   : {
             "name"      : "Bedroom",
-            "interact"  : "Bed",
+            "interact"  : "bed",
+            "solved"    : False,
             "connects"  : {
                 1   : "hall",
                 2   : "balcony_1"
@@ -68,6 +74,7 @@ rooms = {
         "living_room_1" : {
             "name"      : "Living Room 1",
             "interact"  : "",
+            "solved"    : False,
             "connects"  : {
                 1   : "hall",
                 2   : "living_room_2",
@@ -77,7 +84,8 @@ rooms = {
 
         "living_room_2" : {
             "name"      : "Living Room 2",
-            "interact"  : "Villager",
+            "interact"  : "villager",
+            "solved"    : False,
             "connects"  :   {
                 1   : "living_room_1",
                 2   : "living_room_3"
@@ -86,7 +94,8 @@ rooms = {
 
         "living_room_3" : {
             "name"      : "Living Room 3",
-            "interact"  : "Chest",
+            "interact"  : "chest",
+            "solved"    : False,
             "connects"  : {
                 1   : "living_room_2",
                 2   : "living_room_4"
@@ -96,6 +105,7 @@ rooms = {
         "living_room_4" : {
             "name"      : "Living Room 4",
             "interact"  : "",
+            "solved"    : False,
             "connects"  : {
                 1   : "living_room_1",
                 2   : "living_room_3"
@@ -108,6 +118,7 @@ rooms = {
         "balcony_1"     : {
             "name"      : "Balcony 1",
             "interact"  : "",
+            "solved"    : False,
             "connects"  : {
                 1   : "bedroom",
                 2   : "balcony_2"
@@ -117,6 +128,7 @@ rooms = {
         "balcony_2"     : {
             "name"      : "Balcony 2",
             "interact"  : "",
+            "solved"    : False,
             "connects"  : {
                 1   : "balcony_1"
             }
