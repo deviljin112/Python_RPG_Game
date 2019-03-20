@@ -2,31 +2,31 @@ items = {
 
     "head"   : {
         
-        1   : {
+        "Woolen Hat"   : {
             "name"      : "Woolen Hat",
             "slot"      : "head",
             "defence"   : 2
         },
 
-        2   : {
+        "Wooden Bowl"   : {
             "name"      : "Wooden Bowl",
             "slot"      : "head",
             "defence"   : 4
         },
 
-        3   : {
+        "Glass Bowl"   : {
             "name"      : "Glass Bowl",
             "slot"      : "head",
             "defence"   : 1
         },
 
-        4   : {
+        "Steel Helmet"   : {
             "name"      : "Steel Helmet",
             "slot"      : "head",
             "defence"   : 5
         },
 
-        5   : {
+        "Leather Cap"   : {
             "name"      : "Leather Cap",
             "slot"      : "head",
             "defence"   : 3
@@ -35,31 +35,31 @@ items = {
 
     "torso"    : {
 
-        1   : {
+        "Wooden Board"   : {
             "name"      : "Wooden Board",
             "slot"      : "torso",
             "defence"   : 1
         },
 
-        2   : {
+        "Chainmail"   : {
             "name"      : "Chainmail",
             "slot"      : "torso",
             "defence"   : 4
         },
 
-        3   : {
+        "Leather Scale"   : {
             "name"      : "Leather Scale",
             "slot"      : "torso",
             "defence"   : 2
         },
 
-        4   : {
+        "Full Plate"   : {
             "name"      : "Full Plate",
             "slot"      : "torso",
             "defence"   : 5
         },
 
-        5   : {
+        "Scale"   : {
             "name"      : "Scale",
             "slot"      : "torso",
             "defence"   : 3
@@ -68,31 +68,31 @@ items = {
 
     "legs"      : {
 
-        1   : {
+        "Woolen Trousers"   : {
             "name"      : "Woolen Trousers",
             "slot"      : "legs",
             "defence"   : 1
         },
 
-        2   : {
+        "Chainmail Chausses"   : {
             "name"      : "Chainmail Chausses",
             "slot"      : "legs",
             "defence"   : 3
         },
 
-        3   : {
+        "Scale Greaves"   : {
             "name"      : "Scale Greaves",
             "slot"      : "legs",
             "defence"   : 4
         },
 
-        4   : {
+        "Plate Full Leg"   : {
             "name"      : "Plate Full Leg",
             "slot"      : "legs",
             "defence"   : 5
         },
 
-        5   : {
+        "Leather Cuisse"   : {
             "name"      : "Leather Cuisse",
             "slot"      : "legs",
             "defence"   : 2
@@ -101,31 +101,31 @@ items = {
 
     "feet"     : {
 
-        1   : {
+        "Leather Boots"   : {
             "name"      : "Leather Boots",
             "slot"      : "feet",
             "defence"   : 2
         },
 
-        2   : {
+        "Woolen Socks"   : {
             "name"      : "Woolen Socks",
             "slot"      : "feet",
             "defence"   : 1
         },
 
-        3   : {
+        "Plate Sabatons"   : {
             "name"      : "Plate Sabatons",
             "slot"      : "feet",
             "defence"   : 5
         },
 
-        4   : {
+        "Steel Sabatons"   : {
             "name"      : "Steel Sabatons",
             "slot"      : "feet",
             "defence"   : 4
         },
 
-        5   : {
+        "Wooden Shoes"   : {
             "name"      : "Wooden Shoes",
             "slot"      : "feet",
             "defence"   : 3
@@ -134,31 +134,31 @@ items = {
 
     "arms"      : {
 
-        1   : {
+        "Leather Gloves"   : {
             "name"      : "Leather Gloves",
             "slot"      : "arms",
             "defence"   : 3
         },
 
-        2   : {
+        "Plate Gauntlet"   : {
             "name"      : "Plate Gauntlet",
             "slot"      : "arms",
             "defence"   : 3
         },
 
-        3   : {
+        "Steel Vambrace"   : {
             "name"      : "Steel Vambrace",
             "slot"      : "arms",
             "defence"   : 3
         },
 
-        4   : {
+        "Wooden Couter"   : {
             "name"      : "Wooden Couter",
             "slot"      : "arms",
             "defence"   : 3
         },
 
-        5   : {
+        "Chainmail Rerebrace"   : {
             "name"      : "Chainmail Rerebrace",
             "slot"      : "arms",
             "defence"   : 3
@@ -167,31 +167,31 @@ items = {
 
     "right_hand"    : {
 
-        1   : {
+        "Rusty Sword"   : {
             "name"      : "Rusty Sword",
             "slot"      : "right_hand",
             "damage"    : 2
         },
 
-        2   : {
+        "Sharp Dagger"   : {
             "name"      : "Sharp Dagger",
             "slot"      : "right_hand",
             "damage"    : 3
         },
 
-        3   : {
+        "Mace"   : {
             "name"      : "Mace",
             "slot"      : "right_hand",
             "damage"    : 5
         },
 
-        4   : {
+        "Kitchen Knife"   : {
             "name"      : "Kitchen Knife",
             "slot"      : "right_hand",
             "damage"    : 1
         },
 
-        5   : {
+        "Lance"   : {
             "name"      : "Lance",
             "slot"      : "right_hand",
             "damage"    : 4
@@ -200,31 +200,31 @@ items = {
 
     "left_hand"   : {
 
-        1   : {
+        "Pan"   : {
             "name"      : "Pan",
             "slot"      : "left_hand",
             "defence"   : 1
         },
 
-        2   : {
+        "Wooden Shield"   : {
             "name"      : "Wooden Shield",
             "slot"      : "left_hand",
             "defence"   : 2
         },
 
-        3   : {
+        "Knight's Shield"   : {
             "name"      : "Knight's Shield",
             "slot"      : "left_hand",
             "defence"   : 5
         },
 
-        4   : {
+        "Kite Shield"   : {
             "name"      : "Kite Shield",
             "slot"      : "left_hand",
             "defence"   : 3
         },
 
-        5   : {
+        "Buckler"   : {
             "name"      : "Buckler",
             "slot"      : "left_hand",
             "defence"   : 4
@@ -232,31 +232,31 @@ items = {
     },
 
     "potions"   : {
-        1   : {
+        "Health"   : {
             "name"      : "Health",
             "slot"      : "bag",
             "health"    : 50
         },
 
-        2   : {
+        "Luck"   : {
             "name"      : "Luck",
             "slot"      : "bag",
             "luck"      : 2
         },
 
-        3   : {
+        "Speed"   : {
             "name"      : "Speed",
             "slot"      : "bag",
             "speed"     : 2
         },
 
-        4   : {
+        "Critical Strike"   : {
             "name"      : "Critical Strike",
             "slot"      : "bag",
             "c_strike"  : 2
         },
 
-        5   : {
+        "Mana"   : {
             "name"      : "Mana",
             "slot"      : "bag",
             "mana"      : 50

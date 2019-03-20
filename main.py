@@ -282,12 +282,12 @@ def char_connect():
 def search():
     interactive = char_position()
 
-    if (interactive["solved"] is True) and (interactive["interact"] is ""):
-        text_to_print = "You've already searched this area.\n"
+    if interactive["solved"] is True:
+        text_to_print = "You've already cleared this area.\n"
 
         text_printer(text_to_print)
     else:
-        text_to_print = "You've searched the area.\n"
+        text_to_print = "You're searching the area.\n"
 
         text_printer(text_to_print)
 
@@ -323,17 +323,108 @@ def search():
 
             text_printer(text_to_print)
 
-            if interactive["interact"] is ["zombie" or "wolf" or "wraith"]: ## NOT TRIGGERING ATTACK FUNC
-                print("Attack Stage")
-                attack_stage()
-                if enem.health == 0:
-                    interactive["solved"] = True
-                else:
-                    interactive["solved"] = False
-            else:
-                interactive["solved"] = True
+            if interactive["interact"] in ("zombie", "wolf", "wraith"):
+                if interactive["interact"] == "zombie":
+                    c_pick_e = "zombie"
+                    set_global_race_e(c_pick_e)
+                    c_class_e = eval(race_e)
+                    set_global_call_e(c_class_e("Zombie"))
+                
+                    text_printer("BATTLE BEGINS!")
+                    time.sleep(2)
+                    os.system(clear_command)
+                    attack_stage()
+                    if enem.health <= 0:
+                        interactive["solved"] = True
+                        text_printer("Area Cleared!\n")
+                    else:
+                        interactive["solved"] = False
+                elif interactive["interact"] == "wolf":
+                    c_pick_e = "wolf"
+                    set_global_race_e(c_pick_e)
+                    c_class_e = eval(race_e)
+                    set_global_call_e(c_class_e("Wolf"))
 
-    time.sleep(3)
+                    text_printer("BATTLE BEGINS!")
+                    time.sleep(2)
+                    os.system(clear_command)
+                    attack_stage()
+                    if enem.health <= 0:
+                        interactive["solved"] = True
+                        text_printer("Area Cleared!\n")
+                    else:
+                        interactive["solved"] = False
+                elif interactive["interact"] == "wraith":
+                    c_pick_e = "wraith"
+                    set_global_race_e(c_pick_e)
+                    c_class_e = eval(race_e)
+                    set_global_call_e(c_class_e("Wraith"))
+
+                    text_printer("BATTLE BEGINS!")
+                    time.sleep(2)
+                    os.system(clear_command)
+                    attack_stage()
+                    if enem.health <= 0:
+                        interactive["solved"] = True
+                        text_printer("Area Cleared!\n")
+                    else:
+                        interactive["solved"] = False
+                
+                else:
+                    print("Enemy not found? Error Maybe")
+            elif interactive["interact"] is "chest":
+                text_printer("Do you want to open it?")
+                chest_input = input("=> ")
+
+                if chest_input.lower() == "yes":
+                    print("You've Opened the chest")
+                    time.sleep(2)
+
+                    chest_item_a = random.choice(list(items.values()))
+                    chest_item_b = random.choice(list(chest_item_a.values()))
+                    chest_item_name = chest_item_b["name"]
+                    chest_item_slot = chest_item_b["slot"]
+                    text_printer("You found a {}".format(chest_item_name))
+                    text_to_print = '''
+                    {} goes in {}.
+                    You currently have {} in {}.
+                    Do you want to wear it?
+                    Or put it in a bag?
+                    (Write 'wear' or 'bag')
+                    '''.format(chest_item_name, chest_item_slot, char.armour[chest_item_slot].values(), char.armour[chest_item_slot].key())
+
+                    text_printer(text_to_print)
+                    
+                    char_input_action = input("=> ")
+                    if char_input_action == "wear":
+                        char.armour[chest_item_slot].values = chest_item_name
+                        text_printer("{} put {} on.".format(char.name, chest_item_name))
+                        time.sleep(3)
+                        interactive["solved"] = True
+                    elif char_input_action == "bag":
+                        mydict = char.bag
+                        find_empty_bag = list(mydict.keys())[list(mydict.values()).index("empty")]
+                        char.bag[find_empty_bag].values = chest_item_name
+                        text_printer("{} put {} in the bag".format(char.name, chest_item_name))
+                        time.sleep(3)
+                        interactive["solved"] = True
+                    else:
+                        text_printer("Write a valid command.")
+                        time.sleep(2)
+                        interactive["solved"] = False
+                        return
+                    
+                elif chest_input.lower() == "no":
+                    print("You stepped away from a closed chest")
+                    interactive["solved"] = False
+                    time.sleep(3)
+                    return
+                else:
+                    print("Please use a valid command.")
+                    time.sleep(2)
+                    search()
+            else:
+                print("Other Search Bit...")
 
 def level_movement():
     global cat, pos
@@ -380,6 +471,16 @@ def level_movement():
         elif p_move[0] == "search":
             search()
         elif p_move[0] == "me":
+            text_to_print = '''
+            Your name is {}. You are an {} {}.
+            You are currently in the {}.
+            You have {} copper and {} gold coins.
+            You have {} health and {} mana.
+            You are {} level and have {} experiance.
+            \n'''.format(char.name, char.species, char.job, current_position["name"], char.money_a, char.money_b, char.health, char.mana, char.level, char.exp)
+            text_printer(text_to_print)
+            time.sleep(3)
+
             char_table_armour = char.armour
 
             text_to_print = ("| " + "{:<15}".format('Body Part') + "| " + "{:<15}\n".format('Item'))
@@ -391,6 +492,8 @@ def level_movement():
                 label = v
                 text_to_print = ("| " + "{:<15}".format(k) + "| " + "{:<15}\n".format(label))
                 text_printer_a(text_to_print.title())
+
+            time.sleep(5)
 
         elif p_move[0]:
             for p_move[0] in char_connect():
@@ -462,143 +565,299 @@ def main_game_loop():
     time.sleep(2)
 
 def attack_stage():
-    print("Attack begins")
+    text_printer("Attack begins\n")
 
     turn_decider = random.randint(1,2)
 
     if turn_decider == 1:
-        who_turn("p_turn", 0)
+        who_turn("p_turn", 0, False, False)
     else:
-        who_turn("p_turn", 0)
+        who_turn("e_turn", 0, False, False)
 
-def who_turn(x_turn, had_turn):
+## CALL FUNCTION WHEN ITEM PUT ON CHAR ARMOUR SLOT
+## ADD DAMAGE ONLY WHEN PUT ON
+## ADD DEFENCE ONLY WHEN PUT ON
+
+def character_damage_calc():
+    current_dmg = 0
+    current_defence = 0
+
+    armour_table = char.armour
+
+    for k, x in armour_table.items():
+        if x == "nothing":
+            continue
+        else:
+            items_table_stat = items[k]
+            search_stat = items_table_stat[x]
+
+            if "defence" in search_stat:
+                new_stat = search_stat["defence"]
+                current_defence += new_stat
+            elif "damage" in search_stat:
+                new_stat = search_stat["damage"]
+                current_dmg += new_stat
+    char.damage += current_dmg
+    char.defence += current_defence
+
+def who_turn(x_turn, had_turn, enem_dead, play_dead):
     global next_turn, call_turn
 
     call_turn = x_turn
+    if play_dead == False:
+        if enem_dead == False:
+            if had_turn < 2:
 
-    print(had_turn)
+                if x_turn == "p_turn":
+                    text_printer("Player's turn\n")
 
-    while had_turn < 2:
-        print(had_turn)
+                    next_turn = "e_turn"
 
-        if x_turn == "p_turn":
-            print("Player's turn")
+                    dice_game("both")
 
-            next_turn = "e_turn"
+                    if p_wins == e_wins:
+                        text_printer("Round Draw.\n")
 
-            dice_game("both")
+                        p_dmg_done = char.damage * p_wins
+                        e_dmg_done = enem.damage * e_wins
+                        
+                        if apply_unique_stats(char.c_strike):
+                            text_printer("You feel the God's power within you.\n")
+                            p_dmg_done = p_dmg_done + (p_dmg_done * 0.25)
+                            time.sleep(2)
+                        
+                        if apply_unique_stats(char.luck):
+                            text_printer("You got lucky, and can throw your dice again!\n")
+                            text_printer("Type throw if you want to throw your dice again.\n")
+                            if input("=> ") == "throw":
+                                dice_game("player")
+                                
+                                p_dmg_done = char.damage * p_wins
+                                e_dmg_done = enem.damage * e_wins
 
-            if p_wins == e_wins:
-                print("Round Draw")
+                                time.sleep(3)
 
-                p_dmg_done = char.damage * p_wins
-                e_dmg_done = enem.damage * e_wins
-                
-                if apply_unique_stats(char.c_strike):
-                    print("You feel the God's power within you.")
-                    p_dmg_done = p_dmg_done + (p_dmg_done * 0.25)
-                
-                if apply_unique_stats(char.luck):
-                    print("You got lucky, and can throw your dice again!")
-                    print("Type throw if you want to throw your dice again.")
-                    if input("=> ") == "throw":
-                        dice_game("player")
+                        if apply_unique_stats(char.speed):
+                            text_printer("You've dodged the enemy's attack.\n")
+                            e_dmg_done = 0
+                            time.sleep(3)
+                            
+                        dmg_difference_p = p_dmg_done - e_dmg_done
+                        if dmg_difference_p >= 0:
+                            enem.health = enem.health - dmg_difference_p
+                        else:
+                            dmg_difference_p = 0
 
-                if apply_unique_stats(char.speed):
-                    print("You've dodged the enemy's attack.")
-                    e_dmg_done = 0
-                    
-                dmg_difference_p = p_dmg_done - e_dmg_done
-                if dmg_difference_p >= 0:
-                    enem.health = enem.health - dmg_difference_p
+                        dmg_difference_e = e_dmg_done - p_dmg_done
+                        if dmg_difference_e >= 0:
+                            char.health = char.health - dmg_difference_e
+                        else:
+                            dmg_difference_e = 0
+
+                        text_printer("You've dealt {} damage\n".format(dmg_difference_p))
+                        text_printer("Enemy has {} health remaining.\n".format(enem.health))
+                        text_printer("The enemy dealt {} damage.\n".format(dmg_difference_e))
+                        text_printer("You have {} health remaining.\n".format(char.health))
+
+                    elif p_wins > e_wins:
+                        text_printer("Player Wins The Round.\n")
+
+                        p_dmg_done = char.damage * p_wins
+                        e_dmg_done = 0
+                        
+                        if apply_unique_stats(char.c_strike):
+                            text_printer("You feel the God's power within you.\n")
+                            p_dmg_done = p_dmg_done + (p_dmg_done * 0.25)
+
+                        dmg_difference_p = p_dmg_done - e_dmg_done
+                        if dmg_difference_p >= 0:
+                            enem.health = enem.health - dmg_difference_p
+                        else:
+                            dmg_difference_p = 0
+
+                        text_printer("You've dealt {} damage\n".format(dmg_difference_p))
+                        text_printer("Enemy has {} health remaining.\n".format(enem.health))
+
+                    elif p_wins < e_wins:
+                        p_dmg_done = 0
+                        e_dmg_done = enem.damage * e_wins
+                        
+                        if apply_unique_stats(char.luck):
+                            text_printer("You got lucky, and can throw your dice again!\n")
+                            text_printer("Type throw if you want to throw your dice again.\n")
+                            if input("=> ") == "throw":
+                                dice_game("player")
+
+                                p_dmg_done = char.damage * p_wins
+                                e_dmg_done = enem.damage * e_wins
+
+                                time.sleep(3)
+
+                        if apply_unique_stats(char.speed):
+                            text_printer("You've dodged the enemy's attack.\n")
+                            e_dmg_done = enem.damage * (e_wins - 1)
+                        
+                        dmg_difference_e = e_dmg_done - p_dmg_done
+                        if dmg_difference_e >= 0:
+                            char.health = char.health - dmg_difference_e
+                        else:
+                            dmg_difference_e = 0
+
+                        text_printer("The enemy dealt {} damage.\n".format(dmg_difference_e))
+                        text_printer("You have {} health remaining.\n".format(char.health))
+
+                    if enem.health <= 0:
+                        text_printer("Enemy Killed!\n")
+                        time.sleep(2)
+                        check_lvl(enem.exp)
+                        enem_dead = True
+                        return
+                    elif char.health <= 0:
+                        play_dead = True
+                        return
+                        
+                    time.sleep(3)
+                    os.system(clear_command)
+                    had_turn += 1
+                    who_turn(next_turn, had_turn, False, False)
+                elif x_turn == "e_turn":
+                    text_printer("Enemy's turn.\n")
+
+                    next_turn = "p_turn"
+
+                    dice_game_e("both")
+
+                    if p_wins_e == e_wins_e:
+                        text_printer("Round Draw.\n")
+
+                        p_dmg_done = char.damage * p_wins_e
+                        e_dmg_done = enem.damage * e_wins_e
+                        
+                        if apply_unique_stats(char.c_strike):
+                            text_printer("You feel the God's power within you.\n")
+                            p_dmg_done = p_dmg_done + (p_dmg_done * 0.25)
+                            time.sleep(2)
+                        
+                        if apply_unique_stats(char.luck):
+                            text_printer("You got lucky, and can throw your dice again!\n")
+                            text_printer("Type throw if you want to throw your dice again.\n")
+                            if input("=> ") == "throw":
+                                dice_game("player")
+                                
+                                p_dmg_done = char.damage * p_wins_e
+                                e_dmg_done = enem.damage * e_wins_e
+
+                                time.sleep(3)
+
+                        if apply_unique_stats(char.speed):
+                            text_printer("You've dodged the enemy's attack.\n")
+                            e_dmg_done = 0
+                            time.sleep(3)
+                            
+                        dmg_difference_p = p_dmg_done - e_dmg_done
+                        if dmg_difference_p >= 0:
+                            enem.health = enem.health - dmg_difference_p
+                        else:
+                            dmg_difference_p = 0
+
+                        dmg_difference_e = e_dmg_done - p_dmg_done
+                        if dmg_difference_e >= 0:
+                            char.health = char.health - dmg_difference_e
+                        else:
+                            dmg_difference_e = 0
+
+                        text_printer("You've dealt {} damage\n".format(dmg_difference_p))
+                        text_printer("Enemy has {} health remaining.\n".format(enem.health))
+                        text_printer("The enemy dealt {} damage.\n".format(dmg_difference_e))
+                        text_printer("You have {} health remaining.\n".format(char.health))
+
+                    elif p_wins_e > e_wins_e:
+                        text_printer("Player Wins The Round.\n")
+
+                        p_dmg_done = char.damage * p_wins_e
+                        e_dmg_done = 0
+                        
+                        if apply_unique_stats(char.c_strike):
+                            text_printer("You feel the God's power within you.\n")
+                            p_dmg_done = p_dmg_done + (p_dmg_done * 0.25)
+
+                        dmg_difference_p = p_dmg_done - e_dmg_done
+                        if dmg_difference_p >= 0:
+                            enem.health = enem.health - dmg_difference_p
+                        else:
+                            dmg_difference_p = 0
+
+                        text_printer("You've dealt {} damage\n".format(dmg_difference_p))
+                        text_printer("Enemy has {} health remaining.\n".format(enem.health))
+
+                    elif p_wins_e < e_wins_e:
+                        p_dmg_done = 0
+                        e_dmg_done = enem.damage * e_wins_e
+                        
+                        if apply_unique_stats(char.luck):
+                            text_printer("You got lucky, and can throw your dice again!\n")
+                            text_printer("Type throw if you want to throw your dice again.\n")
+                            if input("=> ") == "throw":
+                                dice_game("player")
+
+                                p_dmg_done = char.damage * p_wins_e
+                                e_dmg_done = enem.damage * e_wins_e
+
+                                time.sleep(3)
+
+                        if apply_unique_stats(char.speed):
+                            text_printer("You've dodged the enemy's attack.\n")
+                            e_dmg_done = enem.damage * (e_wins_e - 1)
+                        
+                        dmg_difference_e = e_dmg_done - p_dmg_done
+                        if dmg_difference_e >= 0:
+                            char.health = char.health - dmg_difference_e
+                        else:
+                            dmg_difference_e = 0
+
+                        text_printer("The enemy dealt {} damage.\n".format(dmg_difference_e))
+                        text_printer("You have {} health remaining.\n".format(char.health))
+
+                    if enem.health <= 0:
+                        text_printer("Enemy Killed!\n")
+                        time.sleep(2)
+                        check_lvl(enem.exp)
+                        enem_dead = True
+                        return
+                    elif char.health <= 0:
+                        play_dead = True
+                        return
+
+                    time.sleep(3)
+                    os.system(clear_command)
+                    had_turn += 1
+                    who_turn(next_turn, had_turn, False, False)
+
+            else:
+                text_printer("Attack again? or walk away?\n")
+                text_printer_a("Type 'Attack' to go again.\n")
+                text_printer_a("Type 'Walk' to walk away.\n")
+                p_input_dice = input("=> ")
+
+                if p_input_dice.lower() == "attack":
+                    text_printer("New Turn Begins.\n")
+                    time.sleep(2)
+                    os.system(clear_command)
+                    who_turn(next_turn, 0, False, False)
+                elif p_input_dice.lower() == "walk":
+                    text_printer("You walk away in shame.\n")
+                    time.sleep(2)
+                    os.system(clear_command)
+                    return
                 else:
-                    dmg_difference_p = 0
-
-                dmg_difference_e = e_dmg_done - p_dmg_done
-                if dmg_difference_e >= 0:
-                    char.health = char.health - dmg_difference_e
-                else:
-                    dmg_difference_e = 0
-
-                print("You've dealt {} damage".format(dmg_difference_p))
-                print("Enemy has {} health remaining.".format(enem.health))
-                print("The enemy dealt {} damage.".format(dmg_difference_e))
-                print("You have {} health remaining.".format(char.health))
-
-            elif p_wins > e_wins:
-                print("Player Wins The Round")
-
-                p_dmg_done = char.damage * p_wins
-                e_dmg_done = 0
-                
-                if apply_unique_stats(char.c_strike):
-                    print("You feel the God's power within you.")
-                    p_dmg_done = p_dmg_done + (p_dmg_done * 0.25)
-
-                dmg_difference_p = p_dmg_done - e_dmg_done
-                if dmg_difference_p >= 0:
-                    enem.health = enem.health - dmg_difference_p
-                else:
-                    dmg_difference_p = 0
-
-                print("You've dealt {} damage".format(dmg_difference_p))
-                print("Enemy has {} health remaining".format(enem.health))
-
-            elif p_wins < e_wins:
-                p_dmg_done = 0
-                e_dmg_done = enem.damage * e_wins
-                
-                if apply_unique_stats(char.luck):
-                    print("You got lucky, and can throw your dice again!")
-                    print("Type throw if you want to throw your dice again.")
-                    if input("=> ") == "throw":
-                        dice_game("player")
-
-                if apply_unique_stats(char.speed):
-                    print("You've dodged the enemy's attack.")
-                    e_dmg_done = enem.damage * (e_wins - 1)
-                
-                dmg_difference_e = e_dmg_done - p_dmg_done
-                if dmg_difference_e >= 0:
-                    char.health = char.health - dmg_difference_e
-                else:
-                    dmg_difference_e = 0
-
-                print("The enemy dealt {} damage".format(dmg_difference_e))
-                print("You have {} health remaining".format(char.health))
-                
-            time.sleep(3)
-            had_turn += 1
-            print(had_turn)
-            who_turn(next_turn, had_turn)
-        elif x_turn == "e_turn":
-            print("Enemy's turn")
-
-            next_turn = "p_turn"
-
-            dice_game_e("both")
-
-            time.sleep(3)
-            had_turn += 1
-            print(had_turn)
-            who_turn(next_turn, had_turn)
-
-    else:
-        print("Attack again? or walk away?")
-        print("Type 'Attack' to go again")
-        print("Type 'Walk' to walk away")
-        p_input_dice = input("=> ")
-
-        if p_input_dice.lower() == "attack":
-            print("New Turn Begins")
-            who_turn(next_turn, 0)
-        elif p_input_dice.lower() == "walk":
-            print("You walk away in shame")
-            return
+                    text_printer_a("Please type a valid command!\n")
+                    time.sleep(2)
+                    os.system(clear_command)
+                    who_turn(call_turn, 2, False, False)
         else:
-            print("Please type a valid command")
-            who_turn(call_turn, 2)
-
+            return
+    else:
+        return
 
 def apply_unique_stats(probability):
     return random.random() < probability
@@ -612,11 +871,13 @@ def dice_game(who_lucky):
         p_roll = random.sample(range(1, sides + 1), 3)
         e_roll = random.sample(range(1, sides + 1), 2)
 
-        print("Player Rolled")
+        text_printer("Player Rolled.\n")
         print_dice_rolls(6, p_roll)
+        time.sleep(3)
 
-        print("Enemy Rolled")
+        text_printer("Enemy Rolled.\n")
         print_dice_rolls(6, e_roll)
+        time.sleep(3)
         
         p_list = sorted(p_roll, reverse=True)
         e_list = sorted(e_roll, reverse=True)
@@ -634,17 +895,19 @@ def dice_game(who_lucky):
             else:
                 e_wins += 1
         
-        print("Player won {} and Enemy won {}".format(p_wins, e_wins))
+        text_printer("Player won {} and Enemy won {}.\n".format(p_wins, e_wins))
         return p_wins, e_wins
 
     elif who_lucky == "player":
         p_roll = random.sample(range(1, sides + 1), 3)
 
-        print("Player's New Roll")
+        text_printer("Player's New Roll.\n")
         print_dice_rolls(6, p_roll)
+        time.sleep(3)
 
-        print("Enemy's Previous Roll")
+        text_printer("Enemy's Previous Roll.\n")
         print_dice_rolls(6, e_roll)
+        time.sleep(3)
 
         p_list = sorted(p_roll, reverse=True)
         e_list = sorted(e_roll, reverse=True)
@@ -662,17 +925,19 @@ def dice_game(who_lucky):
             else:
                 e_wins += 1
         
-        print("Player won {} and Enemy won {}".format(p_wins, e_wins))
+        text_printer("Player won {} and Enemy won {}.\n".format(p_wins, e_wins))
         return p_wins, e_wins
 
     elif who_lucky == "enemy":
         e_roll = random.sample(range(1, sides + 1), 2)
 
-        print("Player's Previous Roll")
+        text_printer("Player's Previous Roll.\n")
         print_dice_rolls(6, p_roll)
+        time.sleep(3)
 
-        print("Enemy's New Roll")
+        text_printer("Enemy's New Roll.\n")
         print_dice_rolls(6, e_roll)
+        time.sleep(3)
 
         p_list = sorted(p_roll, reverse=True)
         e_list = sorted(e_roll, reverse=True)
@@ -690,14 +955,110 @@ def dice_game(who_lucky):
             else:
                 e_wins += 1
         
-        print("Player won {} and Enemy won {}".format(p_wins, e_wins))
+        text_printer("Player won {} and Enemy won {}.\n".format(p_wins, e_wins))
         return p_wins, e_wins
 
 def dice_game_e(who_lucky_e):
-    print("dice game enemy side")
-    ## TO BE ADDED -> ENEMY ATTACK LOGIC
+    global p_wins_e, e_wins_e, e_roll_e, p_roll_e
 
-###### MAP MOVEMENT ######
+    sides = 6
+
+    if who_lucky_e == "both":
+        e_roll_e = random.sample(range(1, sides + 1), 3)
+        p_roll_e = random.sample(range(1, sides + 1), 2)
+
+        text_printer("Player Rolled.\n")
+        print_dice_rolls(6, p_roll_e)
+        time.sleep(3)
+
+        text_printer("Enemy Rolled.\n")
+        print_dice_rolls(6, e_roll_e)
+        time.sleep(3)
+        
+        p_list = sorted(p_roll_e, reverse=True)
+        e_list = sorted(e_roll_e, reverse=True)
+
+        paired_dice = zip(p_list, e_list)
+
+        p_wins_e = 0
+        e_wins_e = 0
+
+        for pair in paired_dice:
+            p_pair, e_pair = pair
+
+            if p_pair > e_pair:
+                p_wins_e += 1
+            else:
+                e_wins_e += 1
+        
+        text_printer("Player won {} and Enemy won {}.\n".format(p_wins_e, e_wins_e))
+        return p_wins_e, e_wins_e
+
+    elif who_lucky_e == "player":
+        p_roll_e = random.sample(range(1, sides + 1), 2)
+
+        text_printer("Player's New Roll.\n")
+        print_dice_rolls(6, p_roll_e)
+        time.sleep(3)
+
+        text_printer("Enemy's Previous Roll.\n")
+        print_dice_rolls(6, e_roll_e)
+        time.sleep(3)
+
+        p_list = sorted(p_roll_e, reverse=True)
+        e_list = sorted(e_roll_e, reverse=True)
+
+        paired_dice = zip(p_list, e_list)
+
+        p_wins_e = 0
+        e_wins_e = 0
+
+        for pair in paired_dice:
+            p_pair, e_pair = pair
+
+            if p_pair > e_pair:
+                p_wins_e += 1
+            else:
+                e_wins_e += 1
+        
+        text_printer("Player won {} and Enemy won {}.\n".format(p_wins_e, e_wins_e))
+        return p_wins_e, e_wins_e
+
+    elif who_lucky_e == "enemy":
+        e_roll_e = random.sample(range(1, sides + 1), 3)
+
+        text_printer("Player's Previous Roll.\n")
+        print_dice_rolls(6, p_roll_e)
+        time.sleep(3)
+
+        text_printer("Enemy's New Roll.\n")
+        print_dice_rolls(6, e_roll_e)
+        time.sleep(3)
+
+        p_list = sorted(p_roll_e, reverse=True)
+        e_list = sorted(e_roll_e, reverse=True)
+
+        paired_dice = zip(p_list, e_list)
+
+        p_wins_e = 0
+        e_wins_e = 0
+
+        for pair in paired_dice:
+            p_pair, e_pair = pair
+
+            if p_pair > e_pair:
+                p_wins_e += 1
+            else:
+                e_wins_e += 1
+        
+        text_printer("Player won {} and Enemy won {}.\n".format(p_wins_e, e_wins_e))
+        return p_wins_e, e_wins_e
+
+
+##########################
+#####  MAP MOVEMENT  #####
+##########################
+#                        #
 #      a1 - a2 - a3      #
 #           |            #
 #      b1 - b2 - b3      #
@@ -705,6 +1066,7 @@ def dice_game_e(who_lucky_e):
 #      c1 - c2  c3       #
 #      |    |    |       #
 #      d1 - d2  d3       #
+#                        #
 ##########################
 
 
@@ -721,6 +1083,7 @@ c_pick_e = "zombie"
 set_global_race_e(c_pick_e)
 c_class_e = eval(race_e)
 set_global_call_e(c_class_e("Zombie"))
+
 
 c_pick = "human"
 set_global_race(c_pick)
