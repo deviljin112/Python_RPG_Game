@@ -41,7 +41,7 @@ class player:
         self.speed = 0.0
         self._money_a = 0
         self._money_b = 0
-        self._damage = 0
+        self._damage = 1
         self._defence = 0
         self._health = 100
         self._mana = 0
@@ -150,6 +150,7 @@ class human(player):
     species = "Human"
     
     def __init__(self, name):
+        super().__init__(name)
         self.c_strike = 0.15         # 15% chance for critical strike
         self.luck = 0.25             # 25% for an extra move
         self.speed = 0.10            # 10% chance of dodging
@@ -163,6 +164,7 @@ class elf(player):
     species = "Elf"
 
     def __init__(self, name):
+        super().__init__(name)
         self.c_strike = 0.10         # 10% chance for critical strike
         self.luck = 0.15             # 15% for an extra move
         self.speed = 0.25            # 25% chance of dodging
@@ -175,6 +177,7 @@ class orc(player):
     species = "Orc"
 
     def __init__(self, name):
+        super().__init__(name)
         self.c_strike = 0.25         # 25% chance for critical strike
         self.luck = 0.10             # 10% for an extra move
         self.speed = 0.15            # 15% chance of dodging
@@ -197,7 +200,6 @@ class enemy:
         self.c_strike = 0.0
         self.luck = 0.0
         self.speed = 0.0
-        self._damage = 0
         self._health = 50
         self._exp = 25
         self.drop_rate = 1
@@ -242,8 +244,10 @@ class zombie(enemy):
     species = "Zombie"
 
     def __init__(self, name):
+        super().__init__(name)
+        self._name = name
         self._damage = 1
-        self._health = 50
+        self._health = 5
         self._exp = 50
         self.c_strike = 0.15
         self.luck = 0.10
@@ -253,8 +257,10 @@ class wolf(enemy):
     species = "Wolf"
 
     def __init__(self, name):
+        super().__init__(name)
+        self._name = name
         self._damage = 1
-        self._health = 25
+        self._health = 3
         self._exp = 25
         self.c_strike = 0.10
         self.luck = 0.05
@@ -264,8 +270,10 @@ class wraith(enemy):
     species = "Wraith"
 
     def __init__(self, name):
+        super().__init__(name)
+        self._name = name
         self._damage = 2
-        self._health = 75
+        self._health = 8
         self._exp = 75
         self.c_strike = 0.05
         self.luck = 0.15

@@ -90,6 +90,8 @@ def help_menu():
         time.sleep(3)
         help_menu()
 
+# PLAYER GLOBAL CALLER
+
 def set_global_race(c_race):
     global race
     race = c_race
@@ -97,6 +99,18 @@ def set_global_race(c_race):
 def set_global_call(character):
     global char
     char = character
+
+# ENEMY GLOBAL CALLER
+
+def set_global_race_e(c_race_e):
+    global race_e
+    race_e = c_race_e
+
+def set_global_call_e(character_e):
+    global enem
+    enem = character_e
+
+# PLAYER RACE PICK
 
 def race_pick():
     os.system(clear_command)
@@ -309,9 +323,13 @@ def search():
 
             text_printer(text_to_print)
 
-            if interactive["interact"] is ["zombie", "wolf", "wraith"]:
+            if interactive["interact"] is ["zombie" or "wolf" or "wraith"]: ## NOT TRIGGERING ATTACK FUNC
                 print("Attack Stage")
                 attack_stage()
+                if enem.health == 0:
+                    interactive["solved"] = True
+                else:
+                    interactive["solved"] = False
             else:
                 interactive["solved"] = True
 
@@ -443,25 +461,154 @@ def main_game_loop():
     text_printer(text_to_print)
     time.sleep(2)
 
-
 def attack_stage():
     print("Attack begins")
 
-    #attacking = True
     turn_decider = random.randint(1,2)
 
-    #while attacking is True:
     if turn_decider == 1:
-        who_turn("p_turn")
+        who_turn("p_turn", 0)
     else:
-        who_turn("p_turn")
+        who_turn("p_turn", 0)
 
-def who_turn(x_turn):
-    if x_turn == "p_turn":
-        print("Player's turn")
+def who_turn(x_turn, had_turn):
+    global next_turn, call_turn
 
-        sides = 6
+    call_turn = x_turn
 
+    print(had_turn)
+
+    while had_turn < 2:
+        print(had_turn)
+
+        if x_turn == "p_turn":
+            print("Player's turn")
+
+            next_turn = "e_turn"
+
+            dice_game("both")
+
+            if p_wins == e_wins:
+                print("Round Draw")
+
+                p_dmg_done = char.damage * p_wins
+                e_dmg_done = enem.damage * e_wins
+                
+                if apply_unique_stats(char.c_strike):
+                    print("You feel the God's power within you.")
+                    p_dmg_done = p_dmg_done + (p_dmg_done * 0.25)
+                
+                if apply_unique_stats(char.luck):
+                    print("You got lucky, and can throw your dice again!")
+                    print("Type throw if you want to throw your dice again.")
+                    if input("=> ") == "throw":
+                        dice_game("player")
+
+                if apply_unique_stats(char.speed):
+                    print("You've dodged the enemy's attack.")
+                    e_dmg_done = 0
+                    
+                dmg_difference_p = p_dmg_done - e_dmg_done
+                if dmg_difference_p >= 0:
+                    enem.health = enem.health - dmg_difference_p
+                else:
+                    dmg_difference_p = 0
+
+                dmg_difference_e = e_dmg_done - p_dmg_done
+                if dmg_difference_e >= 0:
+                    char.health = char.health - dmg_difference_e
+                else:
+                    dmg_difference_e = 0
+
+                print("You've dealt {} damage".format(dmg_difference_p))
+                print("Enemy has {} health remaining.".format(enem.health))
+                print("The enemy dealt {} damage.".format(dmg_difference_e))
+                print("You have {} health remaining.".format(char.health))
+
+            elif p_wins > e_wins:
+                print("Player Wins The Round")
+
+                p_dmg_done = char.damage * p_wins
+                e_dmg_done = 0
+                
+                if apply_unique_stats(char.c_strike):
+                    print("You feel the God's power within you.")
+                    p_dmg_done = p_dmg_done + (p_dmg_done * 0.25)
+
+                dmg_difference_p = p_dmg_done - e_dmg_done
+                if dmg_difference_p >= 0:
+                    enem.health = enem.health - dmg_difference_p
+                else:
+                    dmg_difference_p = 0
+
+                print("You've dealt {} damage".format(dmg_difference_p))
+                print("Enemy has {} health remaining".format(enem.health))
+
+            elif p_wins < e_wins:
+                p_dmg_done = 0
+                e_dmg_done = enem.damage * e_wins
+                
+                if apply_unique_stats(char.luck):
+                    print("You got lucky, and can throw your dice again!")
+                    print("Type throw if you want to throw your dice again.")
+                    if input("=> ") == "throw":
+                        dice_game("player")
+
+                if apply_unique_stats(char.speed):
+                    print("You've dodged the enemy's attack.")
+                    e_dmg_done = enem.damage * (e_wins - 1)
+                
+                dmg_difference_e = e_dmg_done - p_dmg_done
+                if dmg_difference_e >= 0:
+                    char.health = char.health - dmg_difference_e
+                else:
+                    dmg_difference_e = 0
+
+                print("The enemy dealt {} damage".format(dmg_difference_e))
+                print("You have {} health remaining".format(char.health))
+                
+            time.sleep(3)
+            had_turn += 1
+            print(had_turn)
+            who_turn(next_turn, had_turn)
+        elif x_turn == "e_turn":
+            print("Enemy's turn")
+
+            next_turn = "p_turn"
+
+            dice_game_e("both")
+
+            time.sleep(3)
+            had_turn += 1
+            print(had_turn)
+            who_turn(next_turn, had_turn)
+
+    else:
+        print("Attack again? or walk away?")
+        print("Type 'Attack' to go again")
+        print("Type 'Walk' to walk away")
+        p_input_dice = input("=> ")
+
+        if p_input_dice.lower() == "attack":
+            print("New Turn Begins")
+            who_turn(next_turn, 0)
+        elif p_input_dice.lower() == "walk":
+            print("You walk away in shame")
+            return
+        else:
+            print("Please type a valid command")
+            who_turn(call_turn, 2)
+
+
+def apply_unique_stats(probability):
+    return random.random() < probability
+
+def dice_game(who_lucky):
+    global p_wins, e_wins, e_roll, p_roll
+
+    sides = 6
+
+    if who_lucky == "both":
         p_roll = random.sample(range(1, sides + 1), 3)
         e_roll = random.sample(range(1, sides + 1), 2)
 
@@ -487,8 +634,68 @@ def who_turn(x_turn):
             else:
                 e_wins += 1
         
-        print("Player won {} and Enemy Lost {}".format(p_wins, e_wins))
+        print("Player won {} and Enemy won {}".format(p_wins, e_wins))
+        return p_wins, e_wins
 
+    elif who_lucky == "player":
+        p_roll = random.sample(range(1, sides + 1), 3)
+
+        print("Player's New Roll")
+        print_dice_rolls(6, p_roll)
+
+        print("Enemy's Previous Roll")
+        print_dice_rolls(6, e_roll)
+
+        p_list = sorted(p_roll, reverse=True)
+        e_list = sorted(e_roll, reverse=True)
+
+        paired_dice = zip(p_list, e_list)
+
+        p_wins = 0
+        e_wins = 0
+
+        for pair in paired_dice:
+            p_pair, e_pair = pair
+
+            if p_pair > e_pair:
+                p_wins += 1
+            else:
+                e_wins += 1
+        
+        print("Player won {} and Enemy won {}".format(p_wins, e_wins))
+        return p_wins, e_wins
+
+    elif who_lucky == "enemy":
+        e_roll = random.sample(range(1, sides + 1), 2)
+
+        print("Player's Previous Roll")
+        print_dice_rolls(6, p_roll)
+
+        print("Enemy's New Roll")
+        print_dice_rolls(6, e_roll)
+
+        p_list = sorted(p_roll, reverse=True)
+        e_list = sorted(e_roll, reverse=True)
+
+        paired_dice = zip(p_list, e_list)
+
+        p_wins = 0
+        e_wins = 0
+
+        for pair in paired_dice:
+            p_pair, e_pair = pair
+
+            if p_pair > e_pair:
+                p_wins += 1
+            else:
+                e_wins += 1
+        
+        print("Player won {} and Enemy won {}".format(p_wins, e_wins))
+        return p_wins, e_wins
+
+def dice_game_e(who_lucky_e):
+    print("dice game enemy side")
+    ## TO BE ADDED -> ENEMY ATTACK LOGIC
 
 ###### MAP MOVEMENT ######
 #      a1 - a2 - a3      #
@@ -507,6 +714,21 @@ def who_turn(x_turn):
 ##              ##
 ##################
 
-attack_stage()
 
-#title_screen()
+## FOR TESTING PURPOSES
+'''
+c_pick_e = "zombie"
+set_global_race_e(c_pick_e)
+c_class_e = eval(race_e)
+set_global_call_e(c_class_e("Zombie"))
+
+c_pick = "human"
+set_global_race(c_pick)
+c_class = eval(race)
+set_global_call(c_class("asdf"))
+
+attack_stage()
+'''
+
+## GAME START TRIGGER
+title_screen()
