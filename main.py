@@ -60,6 +60,9 @@ def title_screen():
         first_boot()
     elif option == "help":
         help_menu()
+    elif option == "skip":
+        race_pick()
+        main_game_loop()
     elif option == "quit":
         sys.exit()
     else:
@@ -75,16 +78,16 @@ def help_menu():
 
     print('''
     Commands:
-    => location_name - moves the character to the location 
+    => location_name - Moves the character to the location 
                        (only if available)
     => me - Displays general information about your character
             as well as current worn armour and backpack content
     => search - Your character searches the current area
-    => check level - Displays your current level and experiance
-    => chech money - Displays your current copper and gold coins
+    => check level - Displays your current level and experience
+    => check money - Displays your current copper and gold coins
     => help - Displays this list again
 
-    Type 'Done' when ready to continue.
+    (Type 'Done' when ready to continue.)
     ''')
 
     option_a = input("=> ")
@@ -131,7 +134,7 @@ def race_pick():
     name_player = input("=> ")
 
     text_to_print = '''
-    Pick a race for your character.
+    What race are you? We never had your kind here.
     (Human, Elf or Orc.)
     '''
     text_printer(text_to_print)
@@ -296,6 +299,7 @@ def search():
         text_to_print = "\nYou've already cleared this area.\n"
 
         text_printer(text_to_print)
+        time.sleep(3)
     else:
         text_to_print = "\nYou're searching the area.\n"
 
@@ -396,28 +400,27 @@ def search():
                     chest_item_slot = chest_item_b["slot"]
                     text_printer("You found a {}.\n".format(chest_item_name))
                     text_to_print = '''
-                    {} goes in {}.
-                    You currently have {} in {}.
-                    Do you want to wear it?
-                    Or put it in a bag?
-                    (Write 'wear' or 'bag')
-                    '''.format(chest_item_name, chest_item_slot, char.armour[chest_item_slot], chest_item_slot)
+        {} goes in {}.
+        You currently have {} in {}.
+        Do you want to wear it?
+        Or put it in a bag?
+        (Write 'wear' or 'bag')
+        '''.format(chest_item_name, chest_item_slot, char.armour[chest_item_slot], chest_item_slot)
 
                     text_printer(text_to_print)
                     
                     char_input_action = input("=> ")
                     if char_input_action == "wear":
-                        char.armour[chest_item_slot] = chest_item_name
-                        text_printer("{} put {} on.".format(char.name, chest_item_name))
+                        stat_calc(chest_item_name, chest_item_slot)
 
-                        stat_calc(chest_item_name)
+                        text_printer("{} put {} on.".format(char.name, chest_item_name))
 
                         time.sleep(3)
                         interactive["solved"] = True
                     elif char_input_action == "bag":
                         mydict = char.bag
                         find_empty_bag = list(mydict.keys())[list(mydict.values()).index("empty")]
-                        char.bag[find_empty_bag].values = chest_item_name
+                        char.bag[find_empty_bag] = chest_item_name
                         text_printer("{} put {} in the bag".format(char.name, chest_item_name))
                         time.sleep(3)
                         interactive["solved"] = True
@@ -439,25 +442,34 @@ def search():
             else:
                 print("Other Search Bit...")
 
-def stat_calc(item_name):
-    armour_table = char.armour
+def stat_calc(item_name, item_slot):
+    armour_t = char.armour
+    if armour_t[item_slot] == "nothing":
+        armour_t[item_slot] = item_name
 
-    for k, v in armour_table.items():
-        if v == "nothing":
-            armour_table[k] = item_name
+        stat = items[item_slot][item_name]
 
-            items_table_stat = items[k]
-            search_stat = items_table_stat[v]
-
-            if "defence" in search_stat:
-                new_stat = search_stat["defence"]
-                char.defence += new_stat
-            elif "damage" in search_stat:
-                new_stat = search_stat["damage"]
-                char.damage += new_stat
+        if "defence" in stat:
+            new_stat = stat["defence"]
+            char.defence += new_stat
+        
+        elif "damage" in stat:
+            new_stat = stat["damage"]
+            char.damage += new_stat
                 
         else:
-            print("ehh")  
+            print("Stat error")
+    
+    else:
+        old_item = armour_t[item_slot]
+
+        mydict = char.bag
+        find_empty_bag = list(mydict.keys())[list(mydict.values()).index("empty")]
+        char.bag[find_empty_bag] = old_item
+
+        armour_t[item_slot] = "nothing"
+
+        stat_calc(item_name, item_slot)
 
 def char_me_func(x,y):
     char_table_armour = x
@@ -572,9 +584,50 @@ def random_turn_speech():
 def first_boot():
     os.system(clear_command)
 
-    text_to_print = "This is a first time booting the game\n"
+    text_to_print = '''
+    (See 'help' to learn all commands available)
 
-    text_printer(text_to_print)
+    You wake up in a strange village.
+    You feel confused and lost.
+
+    You look around to see if there are any villagers around,
+    but see no one. Instead you see rotten food around the alleyway,
+    grass growing onto the houses, and broken doors and windows.
+    
+    The village smells of rotten bodies and food.
+    Something does not feel right about this village.
+
+    You turn away from the disgusting village in front of you
+    in attempt to walk away from the nightmare, but a magical sphere
+    holds you hostage in nightmare village.
+
+    You look around to find answers.
+        Where am I?
+        Why am I here?
+        Why can't I leave?
+        What is going on here?
+
+    The questions in your mind never stop.
+    You decide to explore the village and see what is happening.
+    See if there is a way out and going back to your normal life.
+
+    As you prepare to step forwards towards the village your sight
+    blurs and a vision of a tall humanoid in robes appears
+    in front of you. You can't see his face or what it is.
+    Nothing other than a silhouette.
+
+    You hear it speak like its right in front of you.
+    It asks you a series of questions which you answer in fear.
+    After which the vision disappears leaving you stranded in 
+    the nightmare village you hoped was only a bad dream.
+
+    After regaining your conciousness, you think to yourself
+    what the creature have asked.
+
+    (Type 'ready' when you're ready to start the journey)
+    '''
+
+    text_printer_a(text_to_print)
 
     option_a = input("=> ")
     option = option_a.lower()
