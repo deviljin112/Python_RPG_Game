@@ -73,9 +73,19 @@ def title_screen():
 def help_menu():
     os.system(clear_command)
 
-    text_to_print = ("This is a help menu\n")
+    print('''
+    Commands:
+    => location_name - moves the character to the location 
+                       (only if available)
+    => me - Displays general information about your character
+            as well as current worn armour and backpack content
+    => search - Your character searches the current area
+    => check level - Displays your current level and experiance
+    => chech money - Displays your current copper and gold coins
+    => help - Displays this list again
 
-    text_printer(text_to_print)
+    Type 'Done' when ready to continue.
+    ''')
 
     option_a = input("=> ")
     option = option_a.lower()
@@ -283,11 +293,11 @@ def search():
     interactive = char_position()
 
     if interactive["solved"] is True:
-        text_to_print = "You've already cleared this area.\n"
+        text_to_print = "\nYou've already cleared this area.\n"
 
         text_printer(text_to_print)
     else:
-        text_to_print = "You're searching the area.\n"
+        text_to_print = "\nYou're searching the area.\n"
 
         text_printer(text_to_print)
 
@@ -373,32 +383,35 @@ def search():
                 else:
                     print("Enemy not found? Error Maybe")
             elif interactive["interact"] is "chest":
-                text_printer("Do you want to open it?")
+                text_printer("Do you want to open it?\n")
                 chest_input = input("=> ")
 
                 if chest_input.lower() == "yes":
-                    print("You've Opened the chest")
+                    text_printer("You've opened the chest.\n")
                     time.sleep(2)
 
                     chest_item_a = random.choice(list(items.values()))
                     chest_item_b = random.choice(list(chest_item_a.values()))
                     chest_item_name = chest_item_b["name"]
                     chest_item_slot = chest_item_b["slot"]
-                    text_printer("You found a {}".format(chest_item_name))
+                    text_printer("You found a {}.\n".format(chest_item_name))
                     text_to_print = '''
                     {} goes in {}.
                     You currently have {} in {}.
                     Do you want to wear it?
                     Or put it in a bag?
                     (Write 'wear' or 'bag')
-                    '''.format(chest_item_name, chest_item_slot, char.armour[chest_item_slot].values(), char.armour[chest_item_slot].key())
+                    '''.format(chest_item_name, chest_item_slot, char.armour[chest_item_slot], chest_item_slot)
 
                     text_printer(text_to_print)
                     
                     char_input_action = input("=> ")
                     if char_input_action == "wear":
-                        char.armour[chest_item_slot].values = chest_item_name
+                        char.armour[chest_item_slot] = chest_item_name
                         text_printer("{} put {} on.".format(char.name, chest_item_name))
+
+                        stat_calc(chest_item_name)
+
                         time.sleep(3)
                         interactive["solved"] = True
                     elif char_input_action == "bag":
@@ -426,21 +439,50 @@ def search():
             else:
                 print("Other Search Bit...")
 
+def stat_calc(item_name):
+    armour_table = char.armour
+
+    for k, v in armour_table.items():
+        if v == "nothing":
+            armour_table[k] = item_name
+
+            items_table_stat = items[k]
+            search_stat = items_table_stat[v]
+
+            if "defence" in search_stat:
+                new_stat = search_stat["defence"]
+                char.defence += new_stat
+            elif "damage" in search_stat:
+                new_stat = search_stat["damage"]
+                char.damage += new_stat
+                
+        else:
+            print("ehh")  
+
+def char_me_func(x,y):
+    char_table_armour = x
+
+    text_to_print = ("| " + "{:<15}".format(y) + "| " + "{:<15}\n".format('Item'))
+    text_printer_a(text_to_print.title())
+    table_len = len("| " + "{:<15}".format(y) + "| " + "{:<15}".format('Item'))
+    text_to_print = (("-" * table_len) + "\n")
+    text_printer_a(text_to_print.title())
+    for k, v in char_table_armour.items():
+        label = v
+        text_to_print = ("| " + "{:<15}".format(k) + "| " + "{:<15}\n".format(label))
+        text_printer_a(text_to_print.title())
+
 def level_movement():
     global cat, pos
     cat = char.category
     pos = char.position
 
     current_position = char_position()
-    text_to_print = "You are in the: {}.\n".format(current_position["name"])
-
-    text_printer(text_to_print)
-
-    text_to_print = "You can go to: {}\n".format(list(char_connect()))
-
-    text_printer_a(text_to_print)
-
-    text_to_print = "Next move: \n"
+    text_to_print = '''
+    You are in the: {}.
+    You can go to: {}
+    Next move: 
+    '''.format(current_position["name"],list(char_connect()))
 
     text_printer(text_to_print)
 
@@ -450,6 +492,8 @@ def level_movement():
     if player_move is not "":    
         if p_move[0] == "kill":
             char.health = 0
+        elif p_move[0] == "help":
+            help_menu()
         elif p_move[0] == "check":
             if len(p_move) <= 1:
                 text_to_print = "You need a second argument to check."
@@ -477,22 +521,17 @@ def level_movement():
             You have {} copper and {} gold coins.
             You have {} health and {} mana.
             You are {} level and have {} experiance.
-            \n'''.format(char.name, char.species, char.job, current_position["name"], char.money_a, char.money_b, char.health, char.mana, char.level, char.exp)
+            You deal {} damage and have {} defence.
+            \n'''.format(char.name, char.species, char.job, current_position["name"], 
+                            char.money_a, char.money_b, char.health, char.mana, 
+                            char.level, char.exp, char.damage, char.defence)
             text_printer(text_to_print)
             time.sleep(3)
 
-            char_table_armour = char.armour
-
-            text_to_print = ("| " + "{:<15}".format('Body Part') + "| " + "{:<15}\n".format('Item'))
-            text_printer_a(text_to_print.title())
-            table_len = len("| " + "{:<15}".format('Body Part') + "| " + "{:<15}".format('Item'))
-            text_to_print = (("-" * table_len) + "\n")
-            text_printer_a(text_to_print.title())
-            for k, v in char_table_armour.items():
-                label = v
-                text_to_print = ("| " + "{:<15}".format(k) + "| " + "{:<15}\n".format(label))
-                text_printer_a(text_to_print.title())
-
+            char_me_func(char.armour,"Body Part")
+            print("\n")
+            char_me_func(char.bag, "Slot")
+            
             time.sleep(5)
 
         elif p_move[0]:
@@ -574,32 +613,6 @@ def attack_stage():
     else:
         who_turn("e_turn", 0, False, False)
 
-## CALL FUNCTION WHEN ITEM PUT ON CHAR ARMOUR SLOT
-## ADD DAMAGE ONLY WHEN PUT ON
-## ADD DEFENCE ONLY WHEN PUT ON
-
-def character_damage_calc():
-    current_dmg = 0
-    current_defence = 0
-
-    armour_table = char.armour
-
-    for k, x in armour_table.items():
-        if x == "nothing":
-            continue
-        else:
-            items_table_stat = items[k]
-            search_stat = items_table_stat[x]
-
-            if "defence" in search_stat:
-                new_stat = search_stat["defence"]
-                current_defence += new_stat
-            elif "damage" in search_stat:
-                new_stat = search_stat["damage"]
-                current_dmg += new_stat
-    char.damage += current_dmg
-    char.defence += current_defence
-
 def who_turn(x_turn, had_turn, enem_dead, play_dead):
     global next_turn, call_turn
 
@@ -625,6 +638,11 @@ def who_turn(x_turn, had_turn, enem_dead, play_dead):
                             text_printer("You feel the God's power within you.\n")
                             p_dmg_done = p_dmg_done + (p_dmg_done * 0.25)
                             time.sleep(2)
+
+                        if apply_unique_stats(enem.c_strike):
+                            text_printer("Enemy strikes you with huge power..\n")
+                            e_dmg_done = e_dmg_done + (e_dmg_done * 0.25)
+                            time.sleep(2)
                         
                         if apply_unique_stats(char.luck):
                             text_printer("You got lucky, and can throw your dice again!\n")
@@ -636,19 +654,33 @@ def who_turn(x_turn, had_turn, enem_dead, play_dead):
                                 e_dmg_done = enem.damage * e_wins
 
                                 time.sleep(3)
+                        
+                        if apply_unique_stats(enem.luck):
+                            text_printer("Enemy felt lucky and got to throw the dice again!\n")
+                            dice_game("enemy")
+                            
+                            p_dmg_done = char.damage * p_wins_e
+                            e_dmg_done = enem.damage * e_wins_e
+
+                            time.sleep(3)
 
                         if apply_unique_stats(char.speed):
                             text_printer("You've dodged the enemy's attack.\n")
                             e_dmg_done = 0
                             time.sleep(3)
+
+                        if apply_unique_stats(char.speed):
+                            text_printer("Enemy dodged your attack.\n")
+                            p_dmg_done = 0
+                            time.sleep(3)
                             
-                        dmg_difference_p = p_dmg_done - e_dmg_done
+                        dmg_difference_p = p_dmg_done - enem.defence
                         if dmg_difference_p >= 0:
                             enem.health = enem.health - dmg_difference_p
                         else:
                             dmg_difference_p = 0
 
-                        dmg_difference_e = e_dmg_done - p_dmg_done
+                        dmg_difference_e = e_dmg_done - char.defence
                         if dmg_difference_e >= 0:
                             char.health = char.health - dmg_difference_e
                         else:
@@ -665,23 +697,45 @@ def who_turn(x_turn, had_turn, enem_dead, play_dead):
                         p_dmg_done = char.damage * p_wins
                         e_dmg_done = 0
                         
+                        if apply_unique_stats(enem.luck):
+                            text_printer("Enemy felt lucky and got to throw the dice again!\n")
+                            dice_game("enemy")
+                            
+                            p_dmg_done = char.damage * p_wins_e
+                            e_dmg_done = enem.damage * e_wins_e
+
+                            time.sleep(3)
+
+                        if apply_unique_stats(char.speed):
+                            text_printer("Enemy dodged your attack.\n")
+                            p_dmg_done = char.damage * (p_wins - 1)
+                            time.sleep(3)
+
                         if apply_unique_stats(char.c_strike):
                             text_printer("You feel the God's power within you.\n")
                             p_dmg_done = p_dmg_done + (p_dmg_done * 0.25)
-
-                        dmg_difference_p = p_dmg_done - e_dmg_done
+                        
+                        dmg_difference_p = p_dmg_done - enem.defence
                         if dmg_difference_p >= 0:
                             enem.health = enem.health - dmg_difference_p
                         else:
                             dmg_difference_p = 0
 
+                        dmg_difference_e = e_dmg_done - char.defence
+                        if dmg_difference_e >= 0:
+                            char.health = char.health - dmg_difference_e
+                        else:
+                            dmg_difference_e = 0
+
                         text_printer("You've dealt {} damage\n".format(dmg_difference_p))
                         text_printer("Enemy has {} health remaining.\n".format(enem.health))
+                        text_printer("The enemy dealt {} damage.\n".format(dmg_difference_e))
+                        text_printer("You have {} health remaining.\n".format(char.health))
 
                     elif p_wins < e_wins:
                         p_dmg_done = 0
                         e_dmg_done = enem.damage * e_wins
-                        
+
                         if apply_unique_stats(char.luck):
                             text_printer("You got lucky, and can throw your dice again!\n")
                             text_printer("Type throw if you want to throw your dice again.\n")
@@ -697,12 +751,25 @@ def who_turn(x_turn, had_turn, enem_dead, play_dead):
                             text_printer("You've dodged the enemy's attack.\n")
                             e_dmg_done = enem.damage * (e_wins - 1)
                         
-                        dmg_difference_e = e_dmg_done - p_dmg_done
+                        if apply_unique_stats(enem.c_strike):
+                            text_printer("Enemy strikes you with huge power..\n")
+                            e_dmg_done = e_dmg_done + (e_dmg_done * 0.25)
+                            time.sleep(2)
+                        
+                        dmg_difference_p = p_dmg_done - enem.defence
+                        if dmg_difference_p >= 0:
+                            enem.health = enem.health - dmg_difference_p
+                        else:
+                            dmg_difference_p = 0
+
+                        dmg_difference_e = e_dmg_done - char.defence
                         if dmg_difference_e >= 0:
                             char.health = char.health - dmg_difference_e
                         else:
                             dmg_difference_e = 0
 
+                        text_printer("You've dealt {} damage\n".format(dmg_difference_p))
+                        text_printer("Enemy has {} health remaining.\n".format(enem.health))
                         text_printer("The enemy dealt {} damage.\n".format(dmg_difference_e))
                         text_printer("You have {} health remaining.\n".format(char.health))
 
@@ -738,29 +805,54 @@ def who_turn(x_turn, had_turn, enem_dead, play_dead):
                             p_dmg_done = p_dmg_done + (p_dmg_done * 0.25)
                             time.sleep(2)
                         
+                        if apply_unique_stats(enem.c_strike):
+                            text_printer("Enemy strikes you with huge power.\n")
+                            e_dmg_done = e_dmg_done + (e_dmg_done * 0.25)
+                            time.sleep(2)
+
                         if apply_unique_stats(char.luck):
                             text_printer("You got lucky, and can throw your dice again!\n")
                             text_printer("Type throw if you want to throw your dice again.\n")
                             if input("=> ") == "throw":
-                                dice_game("player")
+                                dice_game_e("player")
                                 
                                 p_dmg_done = char.damage * p_wins_e
                                 e_dmg_done = enem.damage * e_wins_e
 
                                 time.sleep(3)
 
+                        if apply_unique_stats(enem.luck):
+                            text_printer("Enemy felt lucky and got to throw the dice again!\n")
+                            dice_game_e("enemy")
+                            
+                            p_dmg_done = char.damage * p_wins_e
+                            e_dmg_done = enem.damage * e_wins_e
+
+                            time.sleep(3)
+
                         if apply_unique_stats(char.speed):
                             text_printer("You've dodged the enemy's attack.\n")
                             e_dmg_done = 0
                             time.sleep(3)
+
+                        if apply_unique_stats(char.speed):
+                            text_printer("Enemy dodged your attack.\n")
+                            p_dmg_done = 0
+                            time.sleep(3)
                             
-                        dmg_difference_p = p_dmg_done - e_dmg_done
+                        dmg_difference_p = p_dmg_done - enem.defence
                         if dmg_difference_p >= 0:
                             enem.health = enem.health - dmg_difference_p
                         else:
                             dmg_difference_p = 0
 
-                        dmg_difference_e = e_dmg_done - p_dmg_done
+                        dmg_difference_p = p_dmg_done - enem.defence
+                        if dmg_difference_p >= 0:
+                            enem.health = enem.health - dmg_difference_p
+                        else:
+                            dmg_difference_p = 0
+
+                        dmg_difference_e = e_dmg_done - char.defence
                         if dmg_difference_e >= 0:
                             char.health = char.health - dmg_difference_e
                         else:
@@ -780,26 +872,54 @@ def who_turn(x_turn, had_turn, enem_dead, play_dead):
                         if apply_unique_stats(char.c_strike):
                             text_printer("You feel the God's power within you.\n")
                             p_dmg_done = p_dmg_done + (p_dmg_done * 0.25)
+                            time.sleep(2)
+                        
+                        if apply_unique_stats(enem.luck):
+                            text_printer("Enemy felt lucky and got to throw the dice again!\n")
+                            dice_game_e("enemy")
+                            
+                            p_dmg_done = char.damage * p_wins_e
+                            e_dmg_done = enem.damage * e_wins_e
 
-                        dmg_difference_p = p_dmg_done - e_dmg_done
+                            time.sleep(3)
+
+                        if apply_unique_stats(char.speed):
+                            text_printer("Enemy dodged your attack.\n")
+                            p_dmg_done = char.damage * (p_wins_e - 1)
+                            time.sleep(3)
+
+                        dmg_difference_p = p_dmg_done - enem.defence
                         if dmg_difference_p >= 0:
                             enem.health = enem.health - dmg_difference_p
                         else:
                             dmg_difference_p = 0
 
+                        dmg_difference_e = e_dmg_done - char.defence
+                        if dmg_difference_e >= 0:
+                            char.health = char.health - dmg_difference_e
+                        else:
+                            dmg_difference_e = 0
+
                         text_printer("You've dealt {} damage\n".format(dmg_difference_p))
                         text_printer("Enemy has {} health remaining.\n".format(enem.health))
+                        text_printer("The enemy dealt {} damage.\n".format(dmg_difference_e))
+                        text_printer("You have {} health remaining.\n".format(char.health))
 
                     elif p_wins_e < e_wins_e:
                         p_dmg_done = 0
                         e_dmg_done = enem.damage * e_wins_e
                         
+                        if apply_unique_stats(enem.c_strike):
+                            text_printer("Enemy strikes you with huge power.\n")
+                            e_dmg_done = e_dmg_done + (e_dmg_done * 0.25)
+                            time.sleep(2)
+
                         if apply_unique_stats(char.luck):
                             text_printer("You got lucky, and can throw your dice again!\n")
                             text_printer("Type throw if you want to throw your dice again.\n")
                             if input("=> ") == "throw":
-                                dice_game("player")
-
+                                dice_game_e("player")
+                                
                                 p_dmg_done = char.damage * p_wins_e
                                 e_dmg_done = enem.damage * e_wins_e
 
@@ -808,13 +928,22 @@ def who_turn(x_turn, had_turn, enem_dead, play_dead):
                         if apply_unique_stats(char.speed):
                             text_printer("You've dodged the enemy's attack.\n")
                             e_dmg_done = enem.damage * (e_wins_e - 1)
-                        
-                        dmg_difference_e = e_dmg_done - p_dmg_done
+                            time.sleep(3)
+                                           
+                        dmg_difference_p = p_dmg_done - enem.defence
+                        if dmg_difference_p >= 0:
+                            enem.health = enem.health - dmg_difference_p
+                        else:
+                            dmg_difference_p = 0
+
+                        dmg_difference_e = e_dmg_done - char.defence
                         if dmg_difference_e >= 0:
                             char.health = char.health - dmg_difference_e
                         else:
                             dmg_difference_e = 0
 
+                        text_printer("You've dealt {} damage\n".format(dmg_difference_p))
+                        text_printer("Enemy has {} health remaining.\n".format(enem.health))
                         text_printer("The enemy dealt {} damage.\n".format(dmg_difference_e))
                         text_printer("You have {} health remaining.\n".format(char.health))
 
@@ -1059,13 +1188,13 @@ def dice_game_e(who_lucky_e):
 #####  MAP MOVEMENT  #####
 ##########################
 #                        #
-#      a1 - a2 - a3      #
+#      S  - a1 - a2      #
 #           |            #
-#      b1 - b2 - b3      #
+#      c -  h -  b       #
 #           |    |       #
-#      c1 - c2  c3       #
+#      l2 - l1  t1       #
 #      |    |    |       #
-#      d1 - d2  d3       #
+#      l3 - l4  t2       #
 #                        #
 ##########################
 
@@ -1090,7 +1219,7 @@ set_global_race(c_pick)
 c_class = eval(race)
 set_global_call(c_class("asdf"))
 
-attack_stage()
+STAGE_TO_TEST_HERE()
 '''
 
 ## GAME START TRIGGER

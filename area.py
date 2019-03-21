@@ -4,7 +4,7 @@ rooms = {
 
         "spawn" : {
             "name"      : "Spawn",
-            "interact"  : "",
+            "interact"  : "chest",
             "solved"    : False,
             "connects"  : {
                 1   : "alleyway_1"

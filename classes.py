@@ -42,7 +42,7 @@ class player:
         self._money_a = 0
         self._money_b = 0
         self._damage = 1
-        self._defence = 0
+        self._defence = 1
         self._health = 100
         self._mana = 0
         self._exp = 0
@@ -73,6 +73,14 @@ class player:
     @damage.setter
     def damage(self, damage):
         self._damage = damage
+
+    @property
+    def defence(self):
+        return self._defence
+    
+    @defence.setter
+    def defence(self, defence):
+        self._defence = defence
 
     @property
     def health(self):
@@ -200,6 +208,8 @@ class enemy:
         self.c_strike = 0.0
         self.luck = 0.0
         self.speed = 0.0
+        self._damage = 1
+        self._defence = 1
         self._health = 50
         self._exp = 25
         self.drop_rate = 1
@@ -223,6 +233,14 @@ class enemy:
     @damage.setter
     def damage(self, damage):
         self._damage = damage
+
+    @property
+    def defence(self):
+        return self._defence
+    
+    @defence.setter
+    def defence(self, defence):
+        self._defence = defence
 
     @property
     def health(self):
