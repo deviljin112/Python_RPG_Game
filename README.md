@@ -6,7 +6,7 @@ Language:
   
 Genre: 
 
-- Text-based RPG
+- Text-based / RPG / Dungeon Crawler Style
 
 Lore: 
 
