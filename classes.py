@@ -23,7 +23,7 @@ class player:
             "right_hand"    : "nothing"
         }
         self.bag = {
-            1   : "empty",
+            1   : "Health",
             2   : "empty",
             3   : "empty",
             4   : "empty",

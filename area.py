@@ -4,7 +4,7 @@ rooms = {
 
         "spawn" : {
             "name"      : "Spawn",
-            "interact"  : "chest",
+            "interact"  : "",
             "solved"    : False,
             "connects"  : {
                 1   : "alleyway_1"
@@ -51,7 +51,7 @@ rooms = {
 
         "closet"   : {
             "name"      : "Closet",
-            "interact"  : "zombie",
+            "interact"  : "",
             "solved"    : False,
             "connects"  : {
                 1   : "hall"
@@ -60,7 +60,7 @@ rooms = {
 
         "bedroom"   : {
             "name"      : "Bedroom",
-            "interact"  : "bed",
+            "interact"  : "",
             "solved"    : False,
             "connects"  : {
                 1   : "hall",
@@ -84,7 +84,7 @@ rooms = {
 
         "living_room_2" : {
             "name"      : "Living Room 2",
-            "interact"  : "villager",
+            "interact"  : "",
             "solved"    : False,
             "connects"  :   {
                 1   : "living_room_1",
@@ -94,7 +94,7 @@ rooms = {
 
         "living_room_3" : {
             "name"      : "Living Room 3",
-            "interact"  : "chest",
+            "interact"  : "",
             "solved"    : False,
             "connects"  : {
                 1   : "living_room_2",

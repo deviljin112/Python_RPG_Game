@@ -235,31 +235,31 @@ items = {
         "Health"   : {
             "name"      : "Health",
             "slot"      : "bag",
-            "health"    : 50
+            "health"    : 25
         },
 
         "Luck"   : {
             "name"      : "Luck",
             "slot"      : "bag",
-            "luck"      : 2
+            "luck"      : 0.1
         },
 
         "Speed"   : {
             "name"      : "Speed",
             "slot"      : "bag",
-            "speed"     : 2
+            "speed"     : 0.1
         },
 
         "Critical Strike"   : {
             "name"      : "Critical Strike",
             "slot"      : "bag",
-            "c_strike"  : 2
+            "c_strike"  : 0.1
         },
 
         "Mana"   : {
             "name"      : "Mana",
             "slot"      : "bag",
-            "mana"      : 50
+            "mana"      : 25
         }
     }
 }
