@@ -195,6 +195,12 @@ items = {
             "name"      : "Lance",
             "slot"      : "right_hand",
             "damage"    : 4
+        },
+
+        "Katana"    : {
+            "name"      : "Katana",
+            "slot"      : "right_hand",
+            "damage"    : 6
         }
     },
 
