@@ -19,29 +19,29 @@
 
  :rocket: Game Functionality:
 
-- [x] ~~Multiple Races
+- [x] ~~Multiple Races~~
 - [ ] Multiple Classes
 - [ ] Unique Sub Classes when level reached
 - [ ] Save/Load System
-- [x] ~~Character Statistics
-- [x] ~~Randomly Generated Encounters
-- [x] ~~Unique Race Bonuses
-- [x] ~~Chests
-- [x] ~~Potions
-- [x] ~~Armour Slots
-- [x] ~~Bag System
-- [x] ~~Leveling System
-- [x] ~~Risk Tabletop inspired Fighting System
-- [x] ~~Currency System
+- [x] ~~Character Statistics~~
+- [x] ~~Randomly Generated Encounters~~
+- [x] ~~Unique Race Bonuses~~
+- [x] ~~Chests~~
+- [x] ~~Potions~~
+- [x] ~~Armour Slots~~
+- [x] ~~Bag System~~
+- [x] ~~Leveling System~~
+- [x] ~~Risk Tabletop inspired Fighting System~~
+- [x] ~~Currency System~~
 - [ ] Chatbot-like NPCs
 - [ ] Shop (buy/sell items etc)
 - [ ] Large Item Library
 - [ ] Large Map
 - [ ] In-Depth Story Line
-- [x] ~~Backstory / Lore
+- [x] ~~Backstory / Lore~~
 - [ ] Variety of Enemies
 - [ ] Enemy Drop system
 - [ ] Race-orientated speech / chat
 - [ ] Magic spells
 - [ ] Unique class abilities
-- [x] ~~Battle random encounters
+- [x] ~~Battle random encounters~~
