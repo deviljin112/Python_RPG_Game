@@ -234,14 +234,16 @@ def check_lvl(x):
         lvl_up_text = '''
     You've Level'ed up!
     Current Level: {}
-    Current Experiance: {}'''.format(char.level, char.exp)
+    Current Experiance: {}
+    '''.format(char.level, char.exp)
         
         text_printer(lvl_up_text)        
 
     elif gained_exp == 0:
         level_check = '''
     Current Level: {}
-    Current Experiance: {}'''.format(char.level, char.exp)
+    Current Experiance: {}
+    '''.format(char.level, char.exp)
 
         text_printer(level_check)
 
@@ -250,7 +252,8 @@ def check_lvl(x):
         
         exp_left_text = '''
     You've gained {} experiance.
-    Current Experiance: {}.'''.format(gained_exp, char.exp)
+    Current Experiance: {}.
+    '''.format(gained_exp, char.exp)
 
         text_printer(exp_left_text)
     
@@ -435,8 +438,7 @@ def search():
                                 text_to_print = '''
                 {} goes in {}.
                 You currently have {} in {}.
-                Do you want to wear it?
-                Or put it in a bag?
+                Do you want to wear it or bag it?
                 (Write 'wear' or 'bag')
                 '''.format(chest_item_name, chest_item_slot, char.armour[chest_item_slot], chest_item_slot)
 
@@ -497,8 +499,7 @@ def search():
                         text_to_print = '''
         {} goes in {}.
         You currently have {} in {}.
-        Do you want to wear it?
-        Or put it in a bag?
+        Do you want to wear it or bag it?
         (Write 'wear' or 'bag')
         '''.format(chest_item_name, chest_item_slot, char.armour[chest_item_slot], chest_item_slot)
 
@@ -515,6 +516,7 @@ def search():
                                 time.sleep(3)
                                 interactive["solved"] = True
                                 wear_or_bag = True
+                                opening = False
                             elif char_input_action == "bag":
                                 mydict = char.bag
                                 find_empty_bag = list(mydict.keys())[list(mydict.values()).index("empty")]
@@ -523,6 +525,7 @@ def search():
                                 time.sleep(3)
                                 interactive["solved"] = True
                                 wear_or_bag = True
+                                opening = False
                             else:
                                 text_printer("Write a valid command.\n")
                                 interactive["solved"] = False
@@ -538,6 +541,7 @@ def search():
                 
             else:
                 print("Other Search Bit...")
+                time.sleep(2)
 
 def stat_calc(item_name, item_slot):
     armour_t = char.armour
@@ -1053,7 +1057,7 @@ def who_turn(x_turn, had_turn, enem_dead, play_dead):
                             while choosing == False:
                                 player_input = input("=> ")
                                 if player_input == "throw":
-                                    dice_game("player")
+                                    dice_game_e("player")
                                     
                                     p_dmg_done = char.damage * p_wins
                                     e_dmg_done = enem.damage * e_wins
@@ -1166,7 +1170,7 @@ def who_turn(x_turn, had_turn, enem_dead, play_dead):
                             while choosing == False:
                                 player_input = input("=> ")
                                 if player_input == "throw":
-                                    dice_game("player")
+                                    dice_game_e("player")
                                     
                                     p_dmg_done = char.damage * p_wins
                                     e_dmg_done = enem.damage * e_wins
@@ -1216,9 +1220,10 @@ def who_turn(x_turn, had_turn, enem_dead, play_dead):
                     who_turn(next_turn, had_turn, False, False)
 
             else:
-                text_printer("Attack again? or walk away?\n")
+                text_printer("Attack again? or walk away? or use item?\n")
                 text_printer_a("Type 'Attack' to go again.\n")
                 text_printer_a("Type 'Walk' to walk away.\n")
+                text_printer_a("Type 'Use' to use items in your bag.\n")
 
                 next_turn_q = False
 
@@ -1231,6 +1236,11 @@ def who_turn(x_turn, had_turn, enem_dead, play_dead):
                         os.system(clear_command)
                         next_turn_q = True
                         who_turn(next_turn, 0, False, False)
+                    elif p_input_dice.lower() == "use":
+                        bag_action()
+                        text_printer("Attack again? or walk away?\n")
+                        text_printer_a("Type 'Attack' to go again.\n")
+                        text_printer_a("Type 'Walk' to walk away.\n")
                     elif p_input_dice.lower() == "walk":
                         text_printer("You walk away in shame.\n")
                         time.sleep(2)
@@ -1440,19 +1450,18 @@ def dice_game_e(who_lucky_e):
         text_printer("Player won {} and Enemy won {}.\n".format(p_wins_e, e_wins_e))
         return p_wins_e, e_wins_e
 
-### TO BE DONE... CLUELESS ABOUT A GOOD CODING METHOD...
 def random_encounters():
-    print("random encounters")
+    print("Creating Random Encounters...")
+    encounters_keys = ["enemy", "chest", "npc", "furniture", "nothing"]
+    weights_a = [0.2, 0.1, 0.05, 0.05, 0.6]
 
-    weights_a = [0.3, 0.1, 0.05, 0.05, 0.5]
-
-    encounter_a = random.choices(encounters, weights_a)
-    encounter_b = random.choice(list(encounter_a.values()))
-    
     for q, w in rooms.items():
-        for a, s in rooms[w].items():
-            rooms[w][s]["interact"] = encounter_b
+        for a, s in rooms[q].items():
+            encounter_a = random.choices(encounters_keys, weights_a)[0]
+            encounter_b = random.choice(list(encounters[encounter_a].keys()))
+            rooms[q][a]["interact"] = encounters[encounter_a][encounter_b]
 
+    time.sleep(2)
 
 
 ##########################
@@ -1479,5 +1488,8 @@ def random_encounters():
 
 ## FOR TESTING PURPOSES
 
+
+
 ## GAME START TRIGGER
+random_encounters()
 title_screen()
